@@ -8,6 +8,7 @@ body {
 
 @layer components {
   input,
+  textarea,
   select {
     @apply mx-4 bg-indigo-600 px-2 py-1 text-white outline-none placeholder:text-indigo-300 md:w-64;
   }

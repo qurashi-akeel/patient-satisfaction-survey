@@ -6,12 +6,18 @@ generator client {
 }
 
 datasource db {
-    provider = "sqlite"
+    provider = "mongodb"
     url      = env("DATABASE_URL")
 }
 
-model Example {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+model Patient {
+    id                      String   @id @default(cuid()) @map("_id")
+    patientName             String   @unique
+    patientUnit             String
+    fileNumber               Int      @unique
+    overallTreatmentRating  String
+    medicalFacilitiesRating String
+    overallComments         String
+    createdAt               DateTime @default(now())
+    updatedAt               DateTime @updatedAt
 }
