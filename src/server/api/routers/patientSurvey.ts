@@ -35,6 +35,10 @@ export const patientSurveyRouter = createTRPCRouter({
       }
     ),
   getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.patient.findMany();
+    return ctx.prisma.patient.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
   }),
 });

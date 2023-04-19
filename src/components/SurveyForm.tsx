@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { api } from "~/utils/api";
+import Alert from "./Alert";
 
 type FormValues = {
   patientName: string;
@@ -12,22 +14,29 @@ type FormValues = {
 };
 
 const SurveyForm = () => {
-  const { mutate, isLoading } = api.patientSurvey.create.useMutation({
-    onSettled: (data, error) => {
-      console.log("==\n", error);
-      if (error?.data?.stack) {
-        toast.error(
-          `${
-            error?.data?.stack?.split("`")[3]?.replaceAll("_", " ") || ""
-          } already exists.`
-        );
-      }
-      return;
-    },
-    onSuccess: () => {
-      return toast.success("Survey saved...");
-    },
-  });
+  const [saveError, setSaveError] = useState("");
+
+  const { InfoAlert, DangerAlert, SuccessAlert } = Alert();
+
+  const { mutate, isLoading, isSuccess } = api.patientSurvey.create.useMutation(
+    {
+      onSettled: (data, error) => {
+        if (error?.data?.stack) {
+          setSaveError(
+            `${
+              error?.data?.stack?.split("`")[3]?.replaceAll("_", " ") || "Data"
+            } already exists.` || "Something went wrong..."
+          );
+          toast.error(
+            `${
+              error?.data?.stack?.split("`")[3]?.replaceAll("_", " ") || ""
+            } already exists.`
+          );
+        }
+        return;
+      },
+    }
+  );
 
   const {
     register,
@@ -58,13 +67,9 @@ const SurveyForm = () => {
 
   return (
     <div>
-      {isLoading ? (
-        <p className="text-center text-indigo-100">
-          Saving data please wait...
-        </p>
-      ) : (
-        <p>&nbsp;</p>
-      )}
+      {isLoading ? <InfoAlert message="Saving Survey please wait..." /> : ""}
+      {saveError.length > 0 ? <DangerAlert message={saveError} /> : ""}
+      {isSuccess && <SuccessAlert message="Survey saved successfully..." />}
       <form
         className="flex flex-col gap-6 px-8 py-10 sm:border-2 md:border-indigo-300"
         onSubmit={handleSubmit(onSubmit)}
@@ -88,6 +93,7 @@ const SurveyForm = () => {
                   message: "Invalid name",
                 },
                 validate: (fieldValue) => {
+                  setSaveError("");
                   return (
                     fieldValue !== "admin" || "Please enter different name"
                   );
@@ -114,6 +120,7 @@ const SurveyForm = () => {
                   message: "File Number is required.",
                 },
                 validate: (fieldValue) => {
+                  setSaveError("");
                   return fieldValue > 999 || "Please enter valid file number";
                 },
               })}
