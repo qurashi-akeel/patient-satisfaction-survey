@@ -5,6 +5,10 @@
 body {
   color: white;
 }
+::selection {
+  background: #c7d2fe;
+  color:#4338ca;
+}
 
 @layer components {
   input,

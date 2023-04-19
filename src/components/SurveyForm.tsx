@@ -12,9 +12,22 @@ type FormValues = {
 };
 
 const SurveyForm = () => {
-  const { mutate, isLoading, isSuccess } = api.patientSurvey.create.useMutation(
-    {}
-  );
+  const { mutate, isLoading } = api.patientSurvey.create.useMutation({
+    onSettled: (data, error) => {
+      console.log("==\n", error);
+      if (error?.data?.stack) {
+        toast.error(
+          `${
+            error?.data?.stack?.split("`")[3]?.replaceAll("_", " ") || ""
+          } already exists.`
+        );
+      }
+      return;
+    },
+    onSuccess: () => {
+      return toast.success("Survey saved...");
+    },
+  });
 
   const {
     register,
@@ -33,9 +46,7 @@ const SurveyForm = () => {
   });
 
   const onSubmit = (data: FormValues) => {
-    console.log({ data });
-    alert("You Entered: \n\n" + JSON.stringify(data, null, 4));
-    const res = mutate({
+    mutate({
       patientName: data.patientName,
       fileNumber: data.fileNumber,
       patientUnit: data.patientUnit,
@@ -43,13 +54,17 @@ const SurveyForm = () => {
       overallTreatmentRating: data.overallTreatment,
       overallComments: data.overallComments,
     });
-    console.log(res);
   };
 
   return (
     <div>
-      {isLoading && <p>Saving data please wait...</p>}
-      {isSuccess && toast.success("Saved successfully")}
+      {isLoading ? (
+        <p className="text-center text-indigo-100">
+          Saving data please wait...
+        </p>
+      ) : (
+        <p>&nbsp;</p>
+      )}
       <form
         className="flex flex-col gap-6 px-8 py-10 sm:border-2 md:border-indigo-300"
         onSubmit={handleSubmit(onSubmit)}
