@@ -41,4 +41,13 @@ export const patientSurveyRouter = createTRPCRouter({
       },
     });
   }),
+  delete: publicProcedure
+    .input(z.object({ fileNumber: z.number() }))
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.patient.delete({
+        where: {
+          fileNumber: input.fileNumber,
+        },
+      });
+    }),
 });

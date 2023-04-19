@@ -1,16 +1,9 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { Toaster } from "react-hot-toast";
 import { MdDisplaySettings } from "react-icons/md";
 
 const Home: NextPage = () => {
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   return (
     <>
@@ -24,7 +17,6 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-stone-900 to-indigo-950">
-        {isMounted ? <Toaster /> : ""}
         <div className="mx-2 my-4 p-4 text-center text-indigo-100 sm:text-left  sm:text-xl">
           <h2 className="my-6 text-xl font-semibold underline sm:text-2xl">
             Please read the instructions before proceeding further:

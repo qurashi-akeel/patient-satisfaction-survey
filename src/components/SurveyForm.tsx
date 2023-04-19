@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "react-hot-toast";
 import { api } from "~/utils/api";
 import Alert from "./Alert";
 
@@ -26,11 +25,6 @@ const SurveyForm = () => {
             `${
               error?.data?.stack?.split("`")[3]?.replaceAll("_", " ") || "Data"
             } already exists.` || "Something went wrong..."
-          );
-          toast.error(
-            `${
-              error?.data?.stack?.split("`")[3]?.replaceAll("_", " ") || ""
-            } already exists.`
           );
         }
         return;

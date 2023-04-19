@@ -3,11 +3,20 @@ import type { Patient } from "@prisma/client";
 import { MdDelete, MdDisplaySettings } from "react-icons/md";
 import { SurveyDetail, TablePlaceholder } from "~/components";
 import { api } from "~/utils/api";
+import { useRouter } from "next/router";
 
 const SurveyList = () => {
   const [showModal, setShowModal] = useState<Patient | null>(null);
 
+  const router = useRouter();
+
   const { data: surveys } = api.patientSurvey.getAll.useQuery();
+
+  const deleteSurvey = api.patientSurvey.delete.useMutation({
+    onSuccess: () => {
+      router.reload();
+    },
+  });
 
   return (
     <main className="flex min-h-[95vh] flex-col items-center justify-center bg-gradient-to-br from-stone-900 to-indigo-950">
@@ -87,7 +96,11 @@ const SurveyList = () => {
                       <span className="text-yellow-300 hover:text-yellow-500">
                         <MdDelete
                           size={20}
-                          onClick={() => console.log("delete")}
+                          onClick={() =>
+                            deleteSurvey.mutate({
+                              fileNumber: survey.fileNumber,
+                            })
+                          }
                         />
                       </span>
                     </td>
